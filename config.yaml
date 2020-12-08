@@ -1,0 +1,11 @@
+cpu:
+  pct: .2
+  delay: 10ms
+  threads: 1
+mem:
+  max: 100000
+  rate: 10s
+simpleCounter:
+  increaseMax: 150
+  increaseMin: 10
+  rate: 5s
