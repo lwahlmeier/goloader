@@ -33,6 +33,7 @@ func main() {
 	config.SetConfigType("yaml")
 	config.AddConfigPath(".")
 	config.AddConfigPath("/")
+	config.AddConfigPath("/config/")
 
 	if version == "" || version == "latest" {
 		version = "unknown"
