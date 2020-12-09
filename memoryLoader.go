@@ -1,7 +1,6 @@
 package main // import "github.com/lwahlmeier/goloader"
 
 import (
-	"crypto/rand"
 	"runtime"
 	"time"
 )
@@ -14,11 +13,11 @@ func MemoryWatcher() {
 		time.Sleep(time.Second * 5)
 		tmpMemMax := config.GetUint64("mem.max")
 		tmpMemRate := config.GetDuration("mem.rate")
-		log.Debug("memload:  max:{} to:{}, rate:{} to:{}", memMax, tmpMemMax, memRate, tmpMemRate)
+		log.Debug("Memload:  max:{} to:{}, rate:{} to:{}", memMax, tmpMemMax, memRate, tmpMemRate)
 		if tmpMemMax == memMax && tmpMemRate == memRate {
 			continue
 		}
-		log.Info("memload Changed: max:{} to:{}, rate:{} to:{}", memMax, tmpMemMax, memRate, tmpMemRate)
+		log.Info("MemLoad Changed: max:{} to:{}, rate:{} to:{}", memMax, tmpMemMax, memRate, tmpMemRate)
 		if stopChannel != nil {
 			stopChannel <- true
 			close(stopChannel)
@@ -39,25 +38,27 @@ func MemLoader(stop chan bool, maxMem uint64, rate time.Duration) {
 	cycles := uint64(rate.Milliseconds() / sleepTime.Milliseconds())
 	memPerCycle := maxMem / cycles
 	buffer := make([][]byte, 0)
+	log.Info("MemLoader: perCycle:{}", memPerCycle)
 	currentCycle := uint64(0)
 	for {
 		select {
 		case <-stop:
 			buffer = nil
+			log.Info("MemLoader: Stopping Memory processing")
 			return
 		case <-time.After(sleepTime):
 			if currentCycle == cycles {
+				buffer = nil
 				buffer = make([][]byte, 0)
-				log.Debug("Flushing Memory Buffers")
+				log.Info("MemLoader: Ending Memory grow Cycle, Flushing Memory Buffers")
 				runtime.GC()
 				runtime.GC()
 				runtime.GC()
 				currentCycle = 0
 				continue
 			}
-			log.Debug("Adding {} bytes", memPerCycle)
+			log.Debug("MemLoader: Adding {} bytes", memPerCycle)
 			b := make([]byte, memPerCycle)
-			rand.Read(b)
 			buffer = append(buffer, b)
 			currentCycle++
 		}

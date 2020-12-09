@@ -18,7 +18,7 @@ func CpuWatcher() {
 		if tmpCpuPct == cpuPct && tmpCpuDelay == cpuDelay && tmpCpuThreads == cpuThreads {
 			continue
 		}
-		log.Info("cpuLoad Change:  pct:{} to:{}, delay:{} to:{}, threads:{} to:{}", cpuPct, tmpCpuPct, cpuDelay, tmpCpuDelay, cpuThreads, tmpCpuThreads)
+		log.Info("CpuLoad Change:  pct:{} to:{}, delay:{} to:{}, threads:{} to:{}", cpuPct, tmpCpuPct, cpuDelay, tmpCpuDelay, cpuThreads, tmpCpuThreads)
 		for _, v := range stopChannels {
 			v <- true
 		}
